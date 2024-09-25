@@ -1,0 +1,34 @@
+service: image-service
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  environment:
+    BUCKET: image-service-lambda
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+          Resource: arn:aws:s3:::image-service-lambda/*
+functions:
+  imageHandler:
+    handler: handler.imageHandler
+    timeout: 30 
+    events:
+      - http:
+          path: image/{imageId}
+          method: get
+          request:
+            parameters:
+              querystrings:
+                width: false
+                height: false
+                format: false
+                quality: false
+          cors: true
+
+plugins:
+  - serverless-offline
