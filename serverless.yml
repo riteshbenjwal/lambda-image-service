@@ -5,21 +5,24 @@ provider:
   name: aws
   runtime: nodejs18.x
   environment:
-    BUCKET: image-service-lambda
+    BUCKET_NAME: rsgstorage
+    # RGS_ACCESS_KEY_ID: ${env:RGS_ACCESS_KEY_ID} 
+    # RGS_SECRET_ACCESS_KEY: ${env:RGS_SECRET_ACCESS_KEY}
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
             - s3:GetObject
-          Resource: arn:aws:s3:::image-service-lambda/*
+          Resource: arn:aws:s3:::rsgstorage/*
+
 functions:
   imageHandler:
     handler: handler.imageHandler
     timeout: 30 
     events:
       - http:
-          path: image/{imageId}
+          path: image/{proxy+}
           method: get
           request:
             parameters:

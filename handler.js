@@ -3,13 +3,16 @@
 const AWS = require("aws-sdk");
 const sharp = require("sharp");
 
-// Initialize the S3 client
-const s3 = new AWS.S3();
+// Initialize the S3 client with the another aws account
+const s3 = new AWS.S3({
+  accessKeyId: process.env.RGS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.RGS_SECRET_ACCESS_KEY,
+});
 
 module.exports.imageHandler = async (event) => {
   try {
     const bucket = process.env.BUCKET_NAME;
-    const imageId = event.pathParameters.imageId;
+    const imageId = event.pathParameters.proxy;;
     const queryParams = event.queryStringParameters || {};
 
     const originalImage = await s3
